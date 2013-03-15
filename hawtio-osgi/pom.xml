@@ -8,7 +8,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>hawtio-osgi</artifactId>
-  <packaging>war</packaging>
+  <packaging>bundle</packaging>
   <name>${project.artifactId}</name>
   <description>hawtio :: Web Console for OSGi</description>
 
@@ -18,6 +18,20 @@
       <artifactId>hawtio-web</artifactId>
       <version>${project.version}</version>
       <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <version>${osgi-version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>${servlet-api-version}</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
@@ -37,6 +51,64 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>${maven-bundle-plugin-version}</version>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <manifestLocation>${webapp-outdir}/META-INF</manifestLocation>
+          <supportedProjectTypes>
+            <supportedProjectType>jar</supportedProjectType>
+            <supportedProjectType>bundle</supportedProjectType>
+            <supportedProjectType>war</supportedProjectType>
+          </supportedProjectTypes>
+          <instructions>
+            <Webapp-Context>${context}</Webapp-Context>
+            <Web-ContextPath>${context}</Web-ContextPath>
+            <!--
+            <Embed-Directory>/</Embed-Directory>
+-->
+            <!--
+            <Embed-Dependency>*;scope=compile;inline=true</Embed-Dependency>
+-->
+            <Embed-Dependency>*;scope=compile|runtime;inline=true</Embed-Dependency>
+            <!--
+<Include-Resource>
+   {maven-dependencies}
+</Include-Resource>
+-->
+
+            <!-- fix jgit, and slf4j imports -->
+            <!--
+            <Import-Package>!com.jcraft.jzlib,!org.slf4j.*,*</Import-Package>
+            -->
+
+            <!--<Bundle-ClassPath>.,WEB-INF/lib/*.jar,WEB-INF/classes</Bundle-ClassPath> -->
+            <Bundle-Name>${project.description}</Bundle-Name>
+            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+            <Implementation-Title>hawtio osgi</Implementation-Title>
+            <Implementation-Version>${project.version}</Implementation-Version>
+            <_wab>src/main/webapp</_wab>
+          <!--<_wablib>WEB-INF/lib/*.jar</_wablib>-->
+          <!--
+            <_failok>true</_failok> 
+
+-->
+          </instructions>
+        </configuration>
+      </plugin>
+
+
 <!--      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -74,6 +146,7 @@
         </configuration>
       </plugin>-->
 
+          <!--
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
@@ -98,9 +171,11 @@
                 <include>**/*.*</include>
               </includes>
             </resource>
-          </webResources>
+        </webResources>
+        <webXml>src/main/webapp/WEB-INF/web.xml</webXml>        
         </configuration>
       </plugin>
+-->
     </plugins>
   </build>
 </project>
