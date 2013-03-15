@@ -36,16 +36,13 @@ public class OSGiTools implements OSGiToolsMXBean {
 
     @Override
     public long getLoadClassOrigin(long bundleID, String clazz) {
-        System.out.println("Loading " + clazz + " from bundle " + bundleID);
         Bundle b = bundleContext.getBundle(bundleID);
         if (b == null)
             throw new IllegalArgumentException("Not a valid bundle ID: " + bundleID);
 
         try {
             Class<?> cls = b.loadClass(clazz);
-            System.out.println("Found: " + cls);
             ClassLoader classLoader = cls.getClassLoader();
-            System.out.println("Found: " + classLoader);
             if (classLoader instanceof BundleReference)
                 return ((BundleReference) classLoader).getBundle().getBundleId();
         } catch (ClassNotFoundException e) {

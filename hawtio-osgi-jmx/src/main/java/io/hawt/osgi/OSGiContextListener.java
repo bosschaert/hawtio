@@ -10,7 +10,6 @@ public class OSGiContextListener implements ServletContextListener {
 
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         try {
-            System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
             Object bcAttr = servletContextEvent.getServletContext().getAttribute("osgi-bundlecontext");
             if (bcAttr == null) {
                 // not run in an OSGi environment.
@@ -21,8 +20,6 @@ public class OSGiContextListener implements ServletContextListener {
                 return;
 
             BundleContext bundleContext = (BundleContext) bcAttr;
-            System.out.println("@@@: " +bundleContext);
-
             osgiTools = createOSGiTools(bundleContext);
             osgiTools.init();
         } catch (Exception e) {
