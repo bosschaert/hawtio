@@ -17,6 +17,16 @@ module Osgi {
         return true;
       }
 
+        $scope.executeLoadClass = (clazz) => {
+            var divEl = document.getElementById("loadClassResult");
+            divEl.innerHTML +=
+                "<div class='alert alert-success'>" +
+                "<button type='button' class='close' data-dismiss='alert'>&times;</button>" +
+                "Loading class " + clazz + " in Bundle " + $scope.bundleId + ". Class is served from Bundle 9999" +
+            "</div>";
+
+        }
+
         function populateTable(response) {
             var values = response.value;
             $scope.bundles = values;

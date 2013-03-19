@@ -77,6 +77,32 @@
             <td>
             </td>
             <td>
+                <div class="accordion" id="accordionDebugClassLoading">
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionDebugClassLoading"
+                               href="#collapseDebugClassLoading">
+                                Inspect Classloading
+                            </a>
+                        </div>
+                        <div id="collapseDebugClassLoading" class="accordion-body collapse out">
+                            <form class="form-inline">
+                                <fieldset>
+                                    &nbsp;&nbsp;
+                                    <input class="input-xlarge" type="text" ng-model="xx" placeHolder="Enter Class Name to Load...">
+                                    <button class="btn btn-success execute" ng-click="executeLoadClass(xx)"><i class="{{executeIcon}}"></i> Execute</button>
+                                </fieldset>
+                            </form>
+                            <div id="loadClassResult"/>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+            </td>
+            <td>
                 <div class="accordion" id="accordionImportedPackages">
                     <div class="accordion-group">
                         <div class="accordion-heading">
