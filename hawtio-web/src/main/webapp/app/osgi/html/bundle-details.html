@@ -157,8 +157,7 @@
                         </div>
                         <div id="collapseRequiringBundles" class="accordion-body collapse out">
                             <div class="accordion-inner">
-                                <span ng-repeat="bundle in row.RequiringBundles"><a href='#/osgi/bundle/{{bundle}}'>{{bundle}}</a>
-                                </span>
+                                <span ng-bind-html-unsafe="row.RequiringBundles" />
                             </div>
                         </div>
                     </div>
