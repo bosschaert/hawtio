@@ -182,4 +182,14 @@ module Osgi {
         }
         return null;
     }
+
+    export function getHawtioOSGiMBean(workspace:Workspace):string {
+        if (workspace) {
+            var mbeanTypesToDomain = workspace.mbeanTypesToDomain || {};
+            var gitFacades = mbeanTypesToDomain["OSGiTools"] || {};
+            var hawtioFolder = gitFacades["io.hawt.osgi"] || {};
+            return hawtioFolder["objectName"];
+        }
+        return null;
+    }
 }
