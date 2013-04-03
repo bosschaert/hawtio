@@ -2,7 +2,7 @@ module Osgi {
 
     export function defaultBundleValues(workspace:Workspace, $scope, values) {
         angular.forEach(values, (row) => {
-            row["ExportData"] = isolateExportedVersions(row["ExportedPackages"]);
+            row["ExportData"] = handleExportedPackages(row["ExportedPackages"], row["Headers"]);
             row["IdentifierLink"] = bundleLinks(workspace, row["Identifier"]);
             row["Hosts"] = bundleLinks(workspace, row["Hosts"]);
             row["Fragments"] = bundleLinks(workspace, row["Fragments"]);
@@ -74,21 +74,36 @@ module Osgi {
         return array;
     }
 
-    function isolateExportedVersions(packages : string[]) : {} {
+    function handleExportedPackages(packages : string[], headers : {}) : {} {
         var result = {};
+
+        var epHdr = parseExportPackageHeaders(headers);
+
         for (var i = 0; i < packages.length; i++) {
             var exported = packages[i];
+            var data = {};
+
             var idx = exported.indexOf(";");
-            if (idx <= 0) {
-                result[exported] = "";
-                continue;
+            if (idx > 0) {
+                var name = exported.substring(0, idx);
+                var ver = exported.substring(idx + 1)
+                data["ActualVersion"] = ver;
+                result[name] = data;
+            } else {
+                result[exported] = data;
             }
-
-            var name = exported.substring(0, idx);
-            var ver = exported.substring(idx + 1)
-
-            result[name] = ver;
         }
+        return result;
+    }
+
+    function parseExportPackageHeaders(headers : {}) : {} {
+        var result = {};
+
+        var ephdr = headers["Export-Package"].Value;
+        for (var i = 0; i < ephdr.length; i++) {
+
+        }
+
         return result;
     }
 
