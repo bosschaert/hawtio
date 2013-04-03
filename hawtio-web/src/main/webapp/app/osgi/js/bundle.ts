@@ -129,8 +129,33 @@ module Osgi {
             // setup export popovers
             for (var pkg in $scope.row.ExportData) {
                 var po = "<small><table>" +
-                        "<tr><td><strong class='muted'>Version=</strong>" + $scope.row.ExportData[pkg].ActualVersion + "</td></tr>"
-                    "</table></small>"
+                        "<tr><td><strong class='text-info'>Version=</strong>" + $scope.row.ExportData[pkg].ReportedVersion + "</td></tr>";
+                for (var da in $scope.row.ExportData[pkg]) {
+                    var type = da.charAt(0);
+
+                    var separator = "";
+                    var txtClass;
+                    if (type === "A") {
+                        separator = "=";
+                        txtClass = "text-info";
+                    }
+                    if (type === "D") {
+                        separator = ":=";
+                        txtClass = "muted";
+                    }
+
+                    if (separator !== "") {
+                        if (da === "Aversion") {
+                            // We're using the 'ReportedVersion' as it comes from PackageAdmin
+                            continue;
+                        }
+
+                        var value = $scope.row.ExportData[pkg][da];
+                        value = value.replace(/[,]/g, ",<br/>&nbsp;&nbsp;");
+                        po += "<tr><td><strong class='" + txtClass + "'>" + da.substring(1) + "</strong>" + separator + value + "</td></tr>";
+                    }
+                }
+                po += "</table></small>";
                 $(document.getElementById("export." + pkg)).
                     popover({title: "attributes and directives", content: po, trigger: "hover", html: true });
             }

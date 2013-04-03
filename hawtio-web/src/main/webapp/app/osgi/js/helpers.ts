@@ -88,7 +88,7 @@ module Osgi {
                     data = {};
                     result[name] = data;
                 }
-                data["ActualVersion"] = ver;
+                data["ReportedVersion"] = ver;
             }
         }
         return result;
