@@ -96,13 +96,23 @@ module Osgi {
         return result;
     }
 
-    function parseExportPackageHeaders(headers : {}) : {} {
+    export function parseExportPackageHeaders(headers : {}) : {} {
         var result = {};
+        var data = {}
 
         var ephdr = headers["Export-Package"].Value;
+        var inPkg = true;
+        var pkgName = "";
         for (var i = 0; i < ephdr.length; i++) {
+            var c = ephdr.charAt(i);
+            if (c == ';') {
 
+            } else if (c == ',') {
+            } else {
+                pkgName += c;
+            }
         }
+        result[pkgName] = data;
 
         return result;
     }
@@ -113,6 +123,7 @@ module Osgi {
             collection = [values];
         }
         return collection;
+
     }
 
 
