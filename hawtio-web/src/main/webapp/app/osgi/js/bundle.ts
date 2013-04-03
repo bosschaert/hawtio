@@ -129,7 +129,7 @@ module Osgi {
             // setup export popovers
             for (var pkg in $scope.row.ExportData) {
                 var po = "<small><table>" +
-                        "<tr><td><strong class='muted'>Version</strong> " + $scope.row.ExportData[pkg] + "</td></tr>"
+                        "<tr><td><strong class='muted'>Version=</strong>" + $scope.row.ExportData[pkg].ActualVersion + "</td></tr>"
                     "</table></small>"
                 $(document.getElementById("export." + pkg)).
                     popover({title: "attributes and directives", content: po, trigger: "hover", html: true });

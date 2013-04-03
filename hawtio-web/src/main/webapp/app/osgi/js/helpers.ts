@@ -74,23 +74,21 @@ module Osgi {
         return array;
     }
 
-    function handleExportedPackages(packages : string[], headers : {}) : {} {
-        var result = {};
-
-        var epHdr = parseExportPackageHeaders(headers);
+    export function handleExportedPackages(packages : string[], headers : {}) : {} {
+        var result = parseExportPackageHeaders(headers);
 
         for (var i = 0; i < packages.length; i++) {
             var exported = packages[i];
-            var data = {};
-
             var idx = exported.indexOf(";");
             if (idx > 0) {
                 var name = exported.substring(0, idx);
                 var ver = exported.substring(idx + 1)
+                var data = result[name];
+                if (data === undefined) {
+                    data = {};
+                    result[name] = data;
+                }
                 data["ActualVersion"] = ver;
-                result[name] = data;
-            } else {
-                result[exported] = data;
             }
         }
         return result;
@@ -100,7 +98,11 @@ module Osgi {
         var result = {};
         var data = {}
 
-        var ephdr = headers["Export-Package"].Value;
+        var hdr = headers["Export-Package"];
+        if (hdr === undefined) {
+            return result;
+        }
+        var ephdr = hdr.Value;
         var inPkg = true;
         var inQuotes = false;
         var pkgName = "";
@@ -120,6 +122,11 @@ module Osgi {
             if (c === ';') {
                 if (inPkg) {
                     inPkg = false;
+                } else {
+                    handleDADecl(data, daDecl);
+
+                    // reset directive and attribute variable
+                    daDecl = "";
                 }
                 continue;
             }
@@ -127,6 +134,8 @@ module Osgi {
             if (c === ',') {
                 handleDADecl(data, daDecl);
                 result[pkgName] = data;
+
+                // reset data
                 data = {};
                 pkgName = "";
                 daDecl = "";
