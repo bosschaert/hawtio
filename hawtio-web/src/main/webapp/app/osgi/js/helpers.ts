@@ -102,19 +102,62 @@ module Osgi {
 
         var ephdr = headers["Export-Package"].Value;
         var inPkg = true;
+        var inQuotes = false;
         var pkgName = "";
+        var daDecl = "";
         for (var i = 0; i < ephdr.length; i++) {
             var c = ephdr.charAt(i);
-            if (c == ';') {
+            if (c === '"') {
+                inQuotes = !inQuotes;
+                continue;
+            }
+            if (inQuotes) {
+                daDecl += c;
+                continue;
+            }
 
-            } else if (c == ',') {
-            } else {
+            // from here on we are never inside quotes
+            if (c === ';') {
+                if (inPkg) {
+                    inPkg = false;
+                }
+                continue;
+            }
+
+            if (c === ',') {
+                handleDADecl(data, daDecl);
+                result[pkgName] = data;
+                data = {};
+                pkgName = "";
+                daDecl = "";
+                inPkg = true;
+                continue;
+            }
+
+            if (inPkg) {
                 pkgName += c;
+            } else {
+                daDecl += c;
             }
         }
+        handleDADecl(data, daDecl);
         result[pkgName] = data;
 
         return result;
+    }
+
+    function handleDADecl(data : {}, daDecl : string) : void {
+        var didx = daDecl.indexOf(":=");
+        if (didx > 0) {
+            data["D" + daDecl.substring(0, didx)] = daDecl.substring(didx + 2);
+            return;
+        }
+
+        var aidx = daDecl.indexOf("=");
+        if (aidx > 0) {
+            data["A" + daDecl.substring(0, aidx)] = daDecl.substring(aidx + 1);
+            return;
+        }
     }
 
     export function toCollection(values) {
