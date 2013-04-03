@@ -111,9 +111,29 @@ module Osgi {
             $scope.row = Osgi.findBundle($scope.bundleId, values);
             $scope.$apply();
 
+            // This trick is to ensure that the popover is properly visible if it is
+            // smaller than the accordion
+            $('.accordion-body.collapse').hover(
+                function () {
+                    $(this).css('overflow','visible');
+                },
+                function () {
+                    $(this).css('overflow','hidden');
+                }
+            );
+
             // setup tooltips
             $("#bsn").tooltip({title: readHeaderData($scope.row.Headers["Bundle-SymbolicName"].Value),
                 placement: "right"});
+
+            // setup export popovers
+            for (var pkg in $scope.row.ExportData) {
+                var po = "<small><table>" +
+                        "<tr><td><strong class='muted'>Version</strong> " + $scope.row.ExportData[pkg] + "</td></tr>"
+                    "</table></small>"
+                $(document.getElementById("export." + pkg)).
+                    popover({title: "attributes and directives", content: po, trigger: "hover", html: true });
+            }
         };
 
         function readHeaderData(header: string) : string {

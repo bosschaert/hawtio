@@ -2,6 +2,7 @@ module Osgi {
 
     export function defaultBundleValues(workspace:Workspace, $scope, values) {
         angular.forEach(values, (row) => {
+            row["ExportData"] = isolateExportedVersions(row["ExportedPackages"]);
             row["IdentifierLink"] = bundleLinks(workspace, row["Identifier"]);
             row["Hosts"] = bundleLinks(workspace, row["Hosts"]);
             row["Fragments"] = bundleLinks(workspace, row["Fragments"]);
@@ -71,6 +72,24 @@ module Osgi {
             array.push(map);
         });
         return array;
+    }
+
+    function isolateExportedVersions(packages : string[]) : {} {
+        var result = {};
+        for (var i = 0; i < packages.length; i++) {
+            var exported = packages[i];
+            var idx = exported.indexOf(";");
+            if (idx <= 0) {
+                result[exported] = "";
+                continue;
+            }
+
+            var name = exported.substring(0, idx);
+            var ver = exported.substring(idx + 1)
+
+            result[name] = ver;
+        }
+        return result;
     }
 
     export function toCollection(values) {
