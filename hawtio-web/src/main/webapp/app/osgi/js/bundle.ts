@@ -146,6 +146,9 @@ module Osgi {
                     "<tr><td><strong>Imported Version=</strong>" + $scope.row.ImportData[pkg].ReportedVersion + "</td></tr>";
                 po += formatAttributesAndDirectivesForPopover(importPackageHeaders[pkg], false);
                 po += "</table></small>";
+                if (importPackageHeaders[pkg]["Dresolution"] !== "optional") {
+                    $(document.getElementById("import." + pkg)).addClass("label-info");
+                }
                 $(document.getElementById("import." + pkg)).
                     popover({title: "attributes and directives", content: po, trigger: "hover", html: true });
             }

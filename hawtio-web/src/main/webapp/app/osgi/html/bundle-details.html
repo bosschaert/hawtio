@@ -121,15 +121,9 @@
                         <div id="collapseImportedPackages" class="accordion-body collapse out">
                             <table>
                                 <tr ng-repeat="(package, data) in row.ImportData">
-                                    <td><div class="less-big label label-success" id="import.{{package}}">{{package}}</div></td>
+                                    <td><div class="less-big label" id="import.{{package}}">{{package}}</div></td>
                                 </tr>
                             </table>
-                            <!--
-                            <ul class="accordion-inner">
-                                <li ng-repeat="package in row.ImportedPackages">{{package}}
-                                </li>
-                            </ul>
-                            -->
                         </div>
                     </div>
                 </div>
