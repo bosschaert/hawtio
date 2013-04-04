@@ -161,16 +161,24 @@ module Osgi {
                 if (importPackageHeaders[pkg] === undefined) {
                     continue;
                 }
-
-                unsatisfied += pkg + "&nbsp;";
+                unsatisfied += "<tr><td><div class='less-big label label-warning' id='unsatisfied." + pkg + "'>" + pkg + "</div></td></tr>";
             }
 
             if (unsatisfied !== "") {
+                unsatisfied = "<p/><p class='text-warning'>The following optional imports were not satisfied<table>" + unsatisfied + "</table></p>"
                 document.getElementById("unsatisfiedOptionalImports").innerHTML = unsatisfied;
             }
 
-            // var unsatisfied = document.getElementById("unsatisfiedOptionalImports");
-            //unsatisfied.innerHTML = "RRRRRRRRRRRRRRRRRR";
+            for (var pkg in importPackageHeaders) {
+                if (importPackageHeaders[pkg] === undefined) {
+                    continue;
+                }
+                var po = "<small><table>";
+                po += formatAttributesAndDirectivesForPopover(importPackageHeaders[pkg], false);
+                po += "</table></small>";
+                $(document.getElementById("unsatisfied." + pkg)).
+                    popover({title: "attributes and directives", content: po, trigger: "hover", html: true });
+            }
         }
 
         function createExportPackageSection() : void {
