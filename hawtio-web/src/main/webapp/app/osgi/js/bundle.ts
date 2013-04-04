@@ -130,14 +130,6 @@ module Osgi {
             createExportPackageSection();
         };
 
-        function readBSNHeaderData(header: string) : string {
-            var idx = header.indexOf(";");
-            if (idx <= 0)
-                return "";
-
-            return header.substring(idx + 1).trim();
-        }
-
         function createImportPackageSection() : void {
             // setup popovers
             var importPackageHeaders = Osgi.parseManifestHeader($scope.row.Headers, "Import-Package");
@@ -165,7 +157,7 @@ module Osgi {
             }
 
             if (unsatisfied !== "") {
-                unsatisfied = "<p/><p class='text-warning'>The following optional imports were not satisfied<table>" + unsatisfied + "</table></p>"
+                unsatisfied = "<p/><p class='text-warning'>The following optional imports were not satisfied:<table>" + unsatisfied + "</table></p>"
                 document.getElementById("unsatisfiedOptionalImports").innerHTML = unsatisfied;
             }
 
@@ -192,40 +184,6 @@ module Osgi {
                 $(document.getElementById("export." + pkg)).
                     popover({title: "attributes and directives", content: po, trigger: "hover", html: true });
             }
-        }
-
-        function formatAttributesAndDirectivesForPopover(data : {}, skipVersion : bool) : string {
-            var str = "";
-            for (var da in data) {
-                var type = da.charAt(0);
-
-                var separator = "";
-                var txtClass;
-                if (type === "A") {
-                    separator = "=";
-                    txtClass = "text-info";
-                }
-                if (type === "D") {
-                    separator = ":=";
-                    txtClass = "muted";
-                }
-
-                if (separator !== "") {
-                    if (skipVersion) {
-                        if (da === "Aversion") {
-                            // We're using the 'ReportedVersion' as it comes from PackageAdmin
-                            continue;
-                        }
-                    }
-
-                    var value = data[da];
-                    if (value.length > 15) {
-                        value = value.replace(/[,]/g, ",<br/>&nbsp;&nbsp;");
-                    }
-                    str += "<tr><td><strong class='" + txtClass + "'>" + da.substring(1) + "</strong>" + separator + value + "</td></tr>";
-                }
-            }
-            return str;
         }
 
         function updateTableContents() {
@@ -272,5 +230,50 @@ module Osgi {
             ],
                     onSuccess($location.path("/osgi/bundle-list")));
         };
+    }
+
+    // These functions are exported independently to facilitate unit testing
+    export function readBSNHeaderData(header: string) : string {
+        var idx = header.indexOf(";");
+        if (idx <= 0) {
+            return "";
+        }
+        return header.substring(idx + 1).trim();
+    }
+
+    export function formatAttributesAndDirectivesForPopover(data : {}, skipVersion : bool) : string {
+        var str = "";
+        var sortedKeys = Object.keys(data).sort();
+        for (var i = 0; i < sortedKeys.length; i++) {
+            var da = sortedKeys[i];
+            var type = da.charAt(0);
+
+            var separator = "";
+            var txtClass;
+            if (type === "A") {
+                separator = "=";
+                txtClass = "text-info";
+            }
+            if (type === "D") {
+                separator = ":=";
+                txtClass = "muted";
+            }
+
+            if (separator !== "") {
+                if (skipVersion) {
+                    if (da === "Aversion") {
+                        // We're using the 'ReportedVersion' as it comes from PackageAdmin
+                        continue;
+                    }
+                }
+
+                var value = data[da];
+                if (value.length > 15) {
+                    value = value.replace(/[,]/g, ",<br/>&nbsp;&nbsp;");
+                }
+                str += "<tr><td><strong class='" + txtClass + "'>" + da.substring(1) + "</strong>" + separator + value + "</td></tr>";
+            }
+        }
+        return str;
     }
 }

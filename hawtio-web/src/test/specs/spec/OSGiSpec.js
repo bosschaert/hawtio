@@ -76,4 +76,37 @@ describe("OSGi", function() {
         var expected = {ReportedVersion: "1.0.0"};
         expect(result["org.foo.bar"]).toEqual(expected);
     });
+
+    it("bundle.readBSNHeader", function() {
+        expect(Osgi.readBSNHeaderData("blah.blah")).toEqual("");
+        expect(Osgi.readBSNHeaderData("blah.blah;foo=bar;zoo:=zar")).toEqual("foo=bar;zoo:=zar");
+    });
+
+    it("bundle.formatAttributesAndDirectivesForPopover", function() {
+        var data = { Aa: "test", Dresolution: "required", Aversion: "1.2.3.blah", Ddirective: "1.2.3" };
+        expect(stripTags(Osgi.formatAttributesAndDirectivesForPopover(data, true))).
+            toEqual("a=testdirective:=1.2.3resolution:=required");
+        expect(stripTags(Osgi.formatAttributesAndDirectivesForPopover(data, false))).
+            toEqual("a=testversion=1.2.3.blahdirective:=1.2.3resolution:=required");
+    });
+
+    function stripTags(text) {
+        var rv = "";
+        var inTag = false;
+        for (var i = 0; i < text.length; i++) {
+            var c = text[i];
+            if (c === '<') {
+                inTag = true;
+                continue;
+            }
+            if (inTag) {
+                if (c === '>') {
+                    inTag = false;
+                }
+                continue;
+            }
+            rv += c;
+        }
+        return rv;
+    }
 })

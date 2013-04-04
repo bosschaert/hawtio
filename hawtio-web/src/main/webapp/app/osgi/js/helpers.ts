@@ -108,7 +108,7 @@ module Osgi {
         var pkgName = "";
         var daDecl = "";
         for (var i = 0; i < ephdr.length; i++) {
-            var c = ephdr.charAt(i);
+            var c = ephdr[i];
             if (c === '"') {
                 inQuotes = !inQuotes;
                 continue;
