@@ -151,7 +151,26 @@ module Osgi {
                 }
                 $(document.getElementById("import." + pkg)).
                     popover({title: "attributes and directives", content: po, trigger: "hover", html: true });
+
+                // Unset the value so that we can see whether there are any unbound optional imports left...
+                importPackageHeaders[pkg] = undefined;
             }
+
+            var unsatisfied = "";
+            for (var pkg in importPackageHeaders) {
+                if (importPackageHeaders[pkg] === undefined) {
+                    continue;
+                }
+
+                unsatisfied += pkg + "&nbsp;";
+            }
+
+            if (unsatisfied !== "") {
+                document.getElementById("unsatisfiedOptionalImports").innerHTML = unsatisfied;
+            }
+
+            // var unsatisfied = document.getElementById("unsatisfiedOptionalImports");
+            //unsatisfied.innerHTML = "RRRRRRRRRRRRRRRRRR";
         }
 
         function createExportPackageSection() : void {
