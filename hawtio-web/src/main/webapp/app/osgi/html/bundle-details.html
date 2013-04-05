@@ -168,13 +168,13 @@
                             Registered Services
                             <table>
                                 <tr ng-repeat="id in row.RegisteredServices">
-                                    <td><div class="less-big label" id="registers.service.{{id}}">{{id}}</div></td>
+                                    <td><i class="icon-cog less-big text-success" id="registers.service.{{id}}">{{id}}</i></td>
                                 </tr>
-                            </table>
+                            </table><br/>
                             Services used by this Bundle
                             <table>
                                 <tr ng-repeat="id in row.ServicesInUse">
-                                    <td><div class="less-big label label-info" id="uses.service.{{id}}">{{id}}</div></td>
+                                    <td><i class="icon-cog less-big text-info" id="uses.service.{{id}}">{{id}}</i></td>
                                 </tr>
                             </table>
                         </div>

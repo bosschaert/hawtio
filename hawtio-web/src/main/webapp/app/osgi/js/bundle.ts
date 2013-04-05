@@ -227,10 +227,10 @@ module Osgi {
                 var uses = document.getElementById("uses.service." + id);
 
                 if (reg !== undefined && reg !== null) {
-                    reg.innerText = formatServiceName(data[id].objectClass);
+                    reg.innerText = " " + formatServiceName(data[id].objectClass);
                 }
                 if (uses !== undefined && uses !== null) {
-                    uses.innerText = formatServiceName(data[id].objectClass);
+                    uses.innerText = " " + formatServiceName(data[id].objectClass);
                 }
             }
         }
