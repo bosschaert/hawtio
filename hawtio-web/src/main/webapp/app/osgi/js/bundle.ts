@@ -216,11 +216,22 @@ module Osgi {
             if (mbean) {
                 jolokia.request(
                     {type: 'exec', mbean: mbean, operation: 'listServices()'},
-                    onSuccess((response) => {
-                        var value = response.value;
-                        alert(value);
-                    })
-                )
+                    onSuccess(updateServices));
+            }
+        }
+
+        function updateServices(result) {
+            var data = result.value;
+            for (var id in data) {
+                var reg = document.getElementById("registers.service." + id);
+                var uses = document.getElementById("uses.service." + id);
+
+                if (reg !== undefined && reg !== null) {
+                    reg.innerText = formatServiceName(data[id].objectClass);
+                }
+                if (uses !== undefined && uses !== null) {
+                    uses.innerText = formatServiceName(data[id].objectClass);
+                }
             }
         }
 
@@ -313,5 +324,27 @@ module Osgi {
             }
         }
         return str;
+    }
+
+    export function formatServiceName(objClass : any) : string {
+        if (Object.isArray(objClass)) {
+            return formatServiceNameArray(objClass);
+        }
+        var name = objClass.toString();
+        var idx = name.lastIndexOf('.');
+        return name.substring(idx + 1);
+    }
+
+    function formatServiceNameArray(objClass : string[]) : string {
+        var rv = [];
+        for (var i=0; i < objClass.length; i++) {
+            rv.add(formatServiceName(objClass[i]));
+        }
+        rv = rv.filter(function(elem, pos, self) {
+            return self.indexOf(elem) === pos;
+        })
+
+        rv.sort();
+        return rv.toString();
     }
 }
