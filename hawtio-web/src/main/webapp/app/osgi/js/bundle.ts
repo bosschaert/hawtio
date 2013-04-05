@@ -226,12 +226,44 @@ module Osgi {
                 var reg = document.getElementById("registers.service." + id);
                 var uses = document.getElementById("uses.service." + id);
 
-                if (reg !== undefined && reg !== null) {
-                    reg.innerText = " " + formatServiceName(data[id].objectClass);
+                if ((reg === undefined || reg === null) && (uses === undefined || uses === null)) {
+                    continue;
                 }
-                if (uses !== undefined && uses !== null) {
-                    uses.innerText = " " + formatServiceName(data[id].objectClass);
-                }
+
+                jolokia.request({
+                        type: 'exec', mbean: getSelectionServiceMBean(workspace),
+                        operation: 'getProperties', arguments: [id]},
+                    onSuccess(function(svcId, regEl, usesEl) {
+                        return function(resp) {
+                            var props = resp.value;
+                            var sortedKeys = Object.keys(props).sort();
+                            var po = "<small><table>";
+                            for (var i = 0; i < sortedKeys.length; i++) {
+                                var value = props[sortedKeys[i]];
+                                if (value !== undefined) {
+                                    var fval = value.Value;
+                                    if (fval.length > 15) {
+                                        fval = fval.replace(/[,]/g, ",<br/>&nbsp;&nbsp;");
+                                    }
+
+                                    po += "<tr><td valign='top'>" + sortedKeys[i] + "</td><td>" + fval + "</td></tr>"
+                                }
+                            }
+
+                            var regBID = data[svcId].BundleIdentifier;
+                            po += "<tr><td>Registered&nbsp;by</td><td>Bundle " + regBID + " <div class='less-big label'>" + $scope.bundles[regBID].SymbolicName + "</div></td></tr>"
+                            po += "</table></small>";
+
+                            if (regEl !== undefined && regEl !== null) {
+                                regEl.innerText = " " + formatServiceName(data[svcId].objectClass);
+                                $(regEl).popover({title: "service properties", content: po, trigger: "hover", html: true});
+                            }
+                            if (usesEl !== undefined && usesEl !== null) {
+                                usesEl.innerText = " " + formatServiceName(data[svcId].objectClass);
+                                $(usesEl).popover({title: "service properties", content: po, trigger: "hover", html: true});
+                            }
+                        }
+                    }(id, reg, uses)));
             }
         }
 
