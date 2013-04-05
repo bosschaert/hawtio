@@ -128,19 +128,33 @@ module Osgi {
 
             createImportPackageSection();
             createExportPackageSection();
+            populateServicesSection();
         };
 
         function createImportPackageSection() : void {
             // setup popovers
             var importPackageHeaders = Osgi.parseManifestHeader($scope.row.Headers, "Import-Package");
             for (var pkg in $scope.row.ImportData) {
+                var data = importPackageHeaders[pkg];
                 var po = "<small><table>" +
                     "<tr><td><strong>Imported Version=</strong>" + $scope.row.ImportData[pkg].ReportedVersion + "</td></tr>";
-                po += formatAttributesAndDirectivesForPopover(importPackageHeaders[pkg], false);
-                po += "</table></small>";
-                if (importPackageHeaders[pkg]["Dresolution"] !== "optional") {
-                    $(document.getElementById("import." + pkg)).addClass("badge-info");
+                if (data !== undefined) {
+                    // This happens in case the package was imported due to a DynamicImport-Package
+                    po += formatAttributesAndDirectivesForPopover(data, false);
+                    if (importPackageHeaders[pkg]["Dresolution"] !== "optional") {
+                        $(document.getElementById("import." + pkg)).addClass("badge-info");
+                    }
+                } else {
+                    // This is a dynamic import
+                    $(document.getElementById("import." + pkg)).addClass("badge-important");
+                    var reason = $scope.row.Headers["DynamicImport-Package"];
+                    if (reason !== undefined) {
+                        reason = reason.Value;
+                        po += "<tr><td>Dynamic Import. Imported due to:</td></tr>";
+                        po += "<tr><td><strong>DynamicImport-Package=</strong>" + reason + "</td></tr>";
+                    }
                 }
+                po += "</table></small>";
                 $(document.getElementById("import." + pkg)).
                     popover({title: "attributes and directives", content: po, trigger: "hover", html: true });
 
@@ -151,6 +165,11 @@ module Osgi {
             var unsatisfied = "";
             for (var pkg in importPackageHeaders) {
                 if (importPackageHeaders[pkg] === undefined) {
+                    continue;
+                }
+                if ($scope.row.ExportData[pkg] !== undefined) {
+                    // The bundle exports this package and also imports it. In this case it is satisfied from the bundle
+                    // itself so it should not be listed as unsatisfied.
                     continue;
                 }
                 unsatisfied += "<tr><td><div class='less-big badge badge-warning' id='unsatisfied." + pkg + "'>" + pkg + "</div></td></tr>";
@@ -183,6 +202,25 @@ module Osgi {
                 po += "</table></small>";
                 $(document.getElementById("export." + pkg)).
                     popover({title: "attributes and directives", content: po, trigger: "hover", html: true });
+            }
+        }
+
+        function populateServicesSection() : void {
+            if (($scope.row.RegisteredServices === undefined || $scope.row.RegisteredServices.length === 0) &&
+                ($scope.row.ServicesInUse === undefined || $scope.row.ServicesInUse === 0)) {
+                // no services for this bundle
+                return;
+            }
+
+            var mbean = getSelectionServiceMBean(workspace);
+            if (mbean) {
+                jolokia.request(
+                    {type: 'exec', mbean: mbean, operation: 'listServices()'},
+                    onSuccess((response) => {
+                        var value = response.value;
+                        alert(value);
+                    })
+                )
             }
         }
 
