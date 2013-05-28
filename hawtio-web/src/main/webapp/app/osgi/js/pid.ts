@@ -1,8 +1,9 @@
 module Osgi {
     export function ptc(e) {
-
-        alert("PTC: " + e.previousElementSibling.textContent);
         e.contentEditable = true;
+
+        var saveBtn = document.getElementById("saveButton");
+        saveBtn.disabled = false;
     };
 
     export function PidSave() {
@@ -13,7 +14,8 @@ module Osgi {
         for (var i = 0; i < els.length; i++) {
             result += "\n " + els[i].previousElementSibling.textContent + " " + els[i].textContent;
         }
-        alert("Result: " + result);
+
+        notification("success", result);
     };
 
     export function PidController($scope, $filter:ng.IFilterService, workspace:Workspace, $routeParams) {
