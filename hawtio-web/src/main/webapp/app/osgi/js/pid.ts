@@ -15,6 +15,16 @@ module Osgi {
             result += "\n " + els[i].previousElementSibling.textContent + " " + els[i].textContent;
         }
 
+/*
+            var mbean = getSelectionConfigAdminMBean($scope.workspace);
+            if (mbean) {
+                var jolokia = $scope.workspace.jolokia;
+                jolokia.request(
+                    {type: 'exec', mbean: mbean, operation: 'update', arguments: [$scope.pid, $scope.row]},
+                    onSuccess(populateTable));
+            }
+*/
+
         notification("success", result);
     };
 
@@ -32,29 +42,47 @@ module Osgi {
         };
 */
 
+        $scope.pidSave = function() {
+            var table = document.getElementById("configValues");
+
+            var els : any = table.getElementsByClassName("pid-value");
+            var result = "";
+            for (var i = 0; i < els.length; i++) {
+                result += "\n " + els[i].previousElementSibling.textContent + " " + els[i].textContent;
+            }
+
+                var props = {
+                    "indexNames": ["Key"],
+                    "values" : [
+                        {"Key": "foo", "Type": "String", "Value": "fooval"}
+                    ]};
+
+
+                var mbean = getSelectionConfigAdminMBean(workspace);
+                if (mbean) {
+                    var jolokia = workspace.jolokia;
+                    jolokia.request(
+                        {type: 'exec', mbean: mbean, operation: 'update', 
+                            arguments: [$scope.pid, JSON.stringify(props)]},
+                        {success: populateTable,
+                        error: jmxError});
+                        // onSuccess(populateTable), onError(jmxError));
+                }
+
+            notification("success", result);
+        }
+
         $scope.updateEntity = function(column, row) {
             alert("updateEntity: " + column + " " + row);
+        }
+
+        function jmxError(response) {
+            notification("error", "Oops: " + response);
         }
 
         function populateTable(response) {
             $scope.row = response.value
             $scope.$apply();
-
-            var cellEditableTemplate = "<input style=\"width: 90%\" step=\"any\" type=\"number\" ng-class=\"'colt' + col.index\" ng-input=\"COL_FIELD\" ng-blur=\"updateEntity(col, row)\"/>";
-            $scope.myData = [{name: "Moroni", age: 50},
-                             {name: "Tiancum", age: 43},
-                             {name: "Jacob", age: 27},
-                             {name: "Nephi", age: 29},
-                             {name: "Enos", age: 34}];
-            $scope.pidData = {
-                  data: 'myData',
-                  enableCellSelection: true,
-                  canSelectRows: false,
-                  displaySelectionCheckbox: false,
-                  columnDefs: [
-                    {field: 'name', displayName: 'Name', enableCellEdit: true, editableCellTemplate: cellEditableTemplate},
-                    {field:'age', displayName:'Age'}]
-            };
         };
 
         function updateTableContents() {
