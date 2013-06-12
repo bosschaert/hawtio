@@ -51,11 +51,11 @@ module Osgi {
                 result += "\n " + els[i].previousElementSibling.textContent + " " + els[i].textContent;
             }
 
-                var props = {
-                    "indexNames": ["Key"],
-                    "values" : [
-                        {"Key": "foo", "Type": "String", "Value": "fooval"}
-                    ]};
+                var props = "todo fixme";
+                    //{
+                    //foox : "bar"
+                        // {"Key": "foo", "Type": "String", "Value": "fooval"}
+                    //};
 
 
                 var mbean = getSelectionConfigAdminMBean(workspace);
@@ -63,7 +63,8 @@ module Osgi {
                     var jolokia = workspace.jolokia;
                     jolokia.request(
                         {type: 'exec', mbean: mbean, operation: 'update', 
-                            arguments: [$scope.pid, JSON.stringify(props)]},
+                            arguments: [
+                            /* $scope.pid */ "org.ops4j.pax.url.mvn", props]},
                         {success: populateTable,
                         error: jmxError});
                         // onSuccess(populateTable), onError(jmxError));
