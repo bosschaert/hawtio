@@ -1,20 +1,32 @@
 <div>
+    <h3>PID: {{pid}}</h3>
+    <!--
     <table class="overviewSection">
         <tr>
-            <td><strong>Pid:</strong></td>
-            <td class="less-big">{{pid}}
-            </td>
-        </tr>
-        <tr>
-            <td><strong>Configuration:</strong></td>
             <td class="less-big">
-                <table>
-                    <tr ng-repeat="(Key, Value) in row">
-                        <td><strong>{{Key}}</strong></td>
-                        <td>{{Value.Value}}</td>
-                    </tr>
-                </table>
+    -->
+
+
+    <table id="configValues" class="table table-hover">
+        <tr>
+            <th>Key</th><th>Value</th>
+        </tr>
+
+
+        <tr ng-repeat="(Key, Value) in row">
+            <td><strong>{{Key}}</strong></td>
+            <td onclick="Osgi.ptc(this)" class="pid-value">{{Value.Value}}</td>
+        </tr>
+    </table>
+
+    <button id="saveButton" class="btn btn-primary" disabled="disabled" ng-click="pidSave()">Save</button>
+
+    <!--
+    <div class="table" ng-grid="pidData"></div>
+    -->
+    <!--
             </td>
         </tr>
     </table>
+    -->
 </div>

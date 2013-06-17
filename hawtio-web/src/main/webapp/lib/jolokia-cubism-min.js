@@ -1,5 +1,9 @@
 
-(function(){var builder=function(cubism,Jolokia){var VERSION="1.1.0";var ctx_jolokia=function(url,opts){var source={},context=this,j4p=createAgent(url,opts),step=5e3;context.on("start",function(){j4p.start();});context.on("stop",function(){j4p.stop();});source.metric=function(){var values=[];var name;var argsLen=arguments.length;var options={};var lastIdx=arguments.length-1;var lastArg=arguments[lastIdx];if(typeof lastArg=="string"){name=lastArg;argsLen=lastIdx;}
+(function(){var builder=function(cubism,Jolokia){var VERSION="1.1.2";var ctx_jolokia=function(url,opts){var source={},context=this,j4p=createAgent(url,opts),step=5e3;try
+{context.on("start",function(){j4p.start();});context.on("stop",function(){j4p.stop();});}
+catch(err)
+{}
+source.metric=function(){var values=[];var name;var argsLen=arguments.length;var options={};var lastIdx=arguments.length-1;var lastArg=arguments[lastIdx];if(typeof lastArg=="string"){name=lastArg;argsLen=lastIdx;}
 if(typeof lastArg=="object"&&!lastArg.type){options=lastArg;name=options.name;argsLen=lastIdx;}
 if(!name&&typeof arguments[0]!="function"){name=arguments[0].mbean;}
 var metric=context.metric(mapValuesFunc(values,options.keepDelay,context.width),name);if(options.delta){var prevMetric=metric.shift(-options.delta);metric=metric.subtract(prevMetric);if(name){metric.toString=function(){return name};}}
