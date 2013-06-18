@@ -40,6 +40,7 @@ module Osgi {
             var mbean = getSelectionConfigAdminMBean(workspace);
             if (mbean) {
                 var jolokia = workspace.jolokia;
+            // TODO remove quotes from keys
             jolokia.request({
                 "type": "exec",
                 "mbean": mbean,
