@@ -1,6 +1,7 @@
 module Osgi {
     export function PidController($scope, $filter:ng.IFilterService, workspace:Workspace, $routeParams) {
         $scope.deleteConfirmDialog = new Core.Dialog();
+        $scope.addPropertyDialog = new Core.Dialog();
         $scope.pid = $routeParams.pid;
 
         updateTableContents();
@@ -33,6 +34,11 @@ module Osgi {
                         }
                     });
             }
+        }
+
+        $scope.addProperty = (propKey : string, propValue : string) => {
+            var x = $scope.row;
+            console.log("T:" + propKey + " " + propValue);
         }
 
         $scope.deletePidProp = (e) => {

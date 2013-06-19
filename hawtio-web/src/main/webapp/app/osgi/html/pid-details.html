@@ -10,10 +10,11 @@
         <tr ng-repeat="(Key, Value) in row">
             <td id="pid.{{Key}}"><strong>{{Key}}</strong></td>
             <td onclick="Osgi.editPidValueCell(this)" class="pid-value">{{Value.Value}}</td>
-            <td><button class="btn" ng-click="deletePidProp(this)">Delete</button></td>
+            <td><button class="btn" ng-click="deletePidProp(this)" title="Delete"><i class="icon-trash"></i></button></td>
         </tr>
     </table>
 
+    <button class="btn btn-primary" ng-click="addPropertyDialog.open()">Add</button>
     <button id="saveButton" class="btn btn-primary" disabled="disabled" ng-click="pidSave()">Save</button>
 
     <div modal="deleteConfirmDialog.show" close="deleteConfirmDialog.close()" options="deleteConfirmDialog.options">
@@ -23,8 +24,32 @@
                 <p>Are you sure?</p>
             </div>
             <div class="modal-footer">
-                <input class="btn" ng-click="editDialog.close()" type="submit" value="Cancel">
+                <input class="btn" type="submit" value="Cancel">
                 <input class="btn btn-primary" ng-click="deletePidPropConfirmed(de)" type="submit" value="OK">
+            </div>
+        </form>
+    </div>
+
+    <div modal="addPropertyDialog.show" close="addPropertyDialog.close()" options="addPropertyDialog.options">
+        <form class="form-horizontal no-bottom-margin" ng-submit="addPropertyDialog.close()">
+            <div class="modal-header"><h4>Add property</h4></div>
+            <div class="modal-body">
+                <div class="control-group">
+                    <label class="control-label" for="propKey">Key</label>
+                    <div class="controls">
+                        <input class="input-xlarge" type="text" id="propKey" placeholder="Key">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="propValue">Value</label>
+                    <div class="controls">
+                        <input class="input-xlarge" type="text" id="propValue" placeholder="Value">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input class="btn" type="submit" value="Cancel">
+                <input class="btn btn-primary" ng-click="addProperty()" type="submit" value="OK">
             </div>
         </form>
     </div>
