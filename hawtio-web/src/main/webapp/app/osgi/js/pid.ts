@@ -30,6 +30,7 @@ module Osgi {
                             notification("error", response.error);
                         },
                         success: function(response) {
+                            enableSave(false);
                             notification("success", "Successfully updated pid: " + $scope.pid);
                         }
                     });
@@ -43,6 +44,7 @@ module Osgi {
                 Value: value,
                 Type: "String"
             };
+            enableSave(true);
         }
 
         $scope.deletePidProp = (e) => {
@@ -54,7 +56,7 @@ module Osgi {
             $scope.deleteConfirmDialog.close();
             var cell : any = document.getElementById("pid." + $scope.deleteKey);
             cell.parentElement.remove();
-            enableSave();
+            enableSave(true);
         }
 
         function jmxError(response) {
@@ -79,11 +81,11 @@ module Osgi {
 
     export function editPidValueCell(e) {
         e.contentEditable = true;
-        enableSave();
+        enableSave(true);
     }
 
-    function enableSave() {
+    function enableSave(enablement : boolean) {
         var saveBtn = document.getElementById("saveButton");
-        saveBtn.disabled = false;
+        saveBtn.disabled = !enablement;
     }
 }
