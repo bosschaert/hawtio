@@ -43,7 +43,6 @@ module Osgi {
                 Value: value,
                 Type: "String"
             };
-            // $scope.$apply();
         }
 
         $scope.deletePidProp = (e) => {

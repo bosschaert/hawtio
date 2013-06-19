@@ -38,6 +38,7 @@
                     <label class="control-label" for="propKey">Key</label>
                     <div class="controls">
                         <input class="input-xlarge" type="text" id="propKey" placeholder="Key" ng-model="addPropKey" />
+                        <span class="help-block" ng-hide="addPropKey !== '' && addPropKey !== undefined">A key must be specified</span>
                     </div>
                 </div>
                 <div class="control-group">
@@ -48,7 +49,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <input class="btn btn-success" type="submit" value="Add">
+                <input class="btn btn-success" ng-disabled="!(addPropKey !== '' && addPropKey !== undefined)" type="submit" value="Add">
                 <input class="btn btn-primary" ng-click="addPropertyDialog.close()" type="button" value="Cancel">
             </div>
         </form>
