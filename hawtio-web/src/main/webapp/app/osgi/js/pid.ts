@@ -1,12 +1,6 @@
 module Osgi {
-    export function ptc(e) {
-        e.contentEditable = true;
-
-        var saveBtn = document.getElementById("saveButton");
-        saveBtn.disabled = false;
-    };
-
     export function PidController($scope, $filter:ng.IFilterService, workspace:Workspace, $routeParams) {
+        $scope.deleteConfirmDialog = new Core.Dialog();
         $scope.pid = $routeParams.pid;
 
         updateTableContents();
@@ -22,11 +16,6 @@ module Osgi {
                 td[els[i].previousElementSibling.textContent] = els[i].textContent;
             }
 
-//            var td = {
-//               "aaa": "bbb",
-//               "ccc": "ddd"
-//            };
-
             var mbean = getHawtioConfigAdminMBean(workspace);
             if (mbean) {
                 var jolokia = workspace.jolokia;
@@ -34,9 +23,6 @@ module Osgi {
                         type: "exec",
                         mbean: mbean,
                         operation: "configAdminUpdate",
-                        // arguments: ["xxx", "yyy"]
-                        // arguments: [$scope.pid, props]
-                        // arguments: ["zzz", props]
                         arguments: [$scope.pid, JSON.stringify(td)]
                     }, {
                         error: function(response) {
@@ -46,52 +32,18 @@ module Osgi {
                             notification("success", response);
                         }
                     });
-/*
-            var props = 
-                {
-                   "a":  { "Key": "a", "Value": "abc", "Type": "String" } // ,
-                   // "felix.fileinstall.filename":  { "Key": "felix.fileinstall.filename", "Value": "file:/Users/david/clones/bosschaert_fuse_270213/fabric/fuse-fabric/target/fuse-fabric-99-master-SNAPSHOT/etc/foo.bar.cfg", "Type": "String" }
-                };
-            var args : any[] = ["foo.bar", props]; //JSON.stringify(props)];
-
-
-            var mbean = getSelectionConfigAdminMBean(workspace);
-            if (mbean) {
-                var jolokia = workspace.jolokia;
-            // TODO remove quotes from keys
-            jolokia.request({
-                "type": "exec",
-                "mbean": mbean,
-                //"operation": "update(java.lang.String,javax.management.openmbean.TabularData)",
-                "operation": "update",
-                "arguments": args
-
-            }, {
-                method: "post", 
-                error: function(response) {
-                    notification("error", response.error);
-                },
-                success: function(response) {
-                    notification("success", response);
-                }
-            });
-*/
-/*
-                    jolokia.request(
-                        {type: 'exec', mbean: mbean, operation: 'update', 
-                            arguments: [
-                            "org.ops4j.pax.url.mvn", props]},
-                        {success: populateTable,
-                        error: jmxError});
-*/
-                        // onSuccess(populateTable), onError(jmxError));
             }
-
-            // notification("success", result);
         }
 
-        $scope.updateEntity = function(column, row) {
-            alert("updateEntity: " + column + " " + row);
+        $scope.deletePidProp = (e) => {
+            $scope.deleteKey = e.Key;
+            $scope.deleteConfirmDialog.open();
+        }
+
+        $scope.deletePidPropConfirmed = () => {
+            var cell : any = document.getElementById("pid." + $scope.deleteKey);
+            cell.parentElement.remove();
+            enableSave();
         }
 
         function jmxError(response) {
@@ -114,4 +66,13 @@ module Osgi {
         }
     };
 
+    export function editPidValueCell(e) {
+        e.contentEditable = true;
+        enableSave();
+    }
+
+    function enableSave() {
+        var saveBtn = document.getElementById("saveButton");
+        saveBtn.disabled = false;
+    }
 }
