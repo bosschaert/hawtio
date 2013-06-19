@@ -36,9 +36,15 @@ module Osgi {
             }
         }
 
-        $scope.addProperty = (propKey : string, propValue : string) => {
+$scope.addTodo = function() {
+    console.log("Hi");
+            $scope.addPropertyDialog.close();
+}
+
+        $scope.addProperty = function(key, value) {
             var x = $scope.row;
-            console.log("T:" + propKey + " " + propValue);
+            console.log("T:"     );
+            $scope.addPropertyDialog.close();
         }
 
         $scope.deletePidProp = (e) => {
