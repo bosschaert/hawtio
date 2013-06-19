@@ -36,15 +36,14 @@ module Osgi {
             }
         }
 
-$scope.addTodo = function() {
-    console.log("Hi");
+        $scope.addPropertyConfirmed = function(key, value) {
             $scope.addPropertyDialog.close();
-}
-
-        $scope.addProperty = function(key, value) {
-            var x = $scope.row;
-            console.log("T:"     );
-            $scope.addPropertyDialog.close();
+            $scope.row[key] = {
+                Key: key,
+                Value: value,
+                Type: "String"
+            };
+            // $scope.$apply();
         }
 
         $scope.deletePidProp = (e) => {
@@ -53,6 +52,7 @@ $scope.addTodo = function() {
         }
 
         $scope.deletePidPropConfirmed = () => {
+            $scope.deleteConfirmDialog.close();
             var cell : any = document.getElementById("pid." + $scope.deleteKey);
             cell.parentElement.remove();
             enableSave();
