@@ -1,9 +1,15 @@
 package io.hawt.osgi.jmx;
 
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.util.Hashtable;
+import java.util.Map;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 
 public class ConfigAdmin implements ConfigAdminMXBean {
     private final BundleContext bundleContext;
@@ -31,7 +37,23 @@ public class ConfigAdmin implements ConfigAdminMXBean {
     }
 
     @Override
-    public void configAdminUpdate(String pid, String data) {
-        System.out.println("*** PID:" + pid + "\nData: " + data);
+    public void configAdminUpdate(String pid, Map<String, String> data) {
+        ServiceReference sref = bundleContext.getServiceReference(ConfigurationAdmin.class.getName());
+        if (sref == null) {
+            throw new IllegalStateException("The configuration admin service cannot be found.");
+        }
+
+        try {
+            ConfigurationAdmin ca = (ConfigurationAdmin) bundleContext.getService(sref);
+            if (ca == null) {
+                throw new IllegalStateException("The configuration admin service cannot be found.");
+            }
+            Configuration config = ca.getConfiguration(pid);
+            config.update(new Hashtable<String, String>(data));
+        } catch (IOException ioe) {
+            throw new RuntimeException(ioe);
+        } finally {
+            bundleContext.ungetService(sref);
+        }
     }
 }

@@ -16,9 +16,16 @@ module Osgi {
 
             var els : any = table.getElementsByClassName("pid-value");
             var props = "";
+            var td = {};
             for (var i = 0; i < els.length; i++) {
                 props += "\n " + els[i].previousElementSibling.textContent + " " + els[i].textContent;
+                td[els[i].previousElementSibling.textContent] = els[i].textContent;
             }
+
+//            var td = {
+//               "aaa": "bbb",
+//               "ccc": "ddd"
+//            };
 
             var mbean = getHawtioConfigAdminMBean(workspace);
             if (mbean) {
@@ -30,7 +37,7 @@ module Osgi {
                         // arguments: ["xxx", "yyy"]
                         // arguments: [$scope.pid, props]
                         // arguments: ["zzz", props]
-                        arguments: [$scope.pid, "qqq"]
+                        arguments: [$scope.pid, JSON.stringify(td)]
                     }, {
                         error: function(response) {
                             notification("error", response.error);
