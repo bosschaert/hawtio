@@ -29,7 +29,7 @@ module Osgi {
                             notification("error", response.error);
                         },
                         success: function(response) {
-                            notification("success", response);
+                            notification("success", "Successfully updated pid: " + $scope.pid);
                         }
                     });
             }
