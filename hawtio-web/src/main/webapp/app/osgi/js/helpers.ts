@@ -295,11 +295,22 @@ module Osgi {
         return null;
     }
 
-    export function getHawtioOSGiMBean(workspace:Workspace):string {
+    // TODO the above could be improved?
+    export function getHawtioOSGiToolsMBean(workspace:Workspace):string {
         if (workspace) {
             var mbeanTypesToDomain = workspace.mbeanTypesToDomain || {};
             var gitFacades = mbeanTypesToDomain["OSGiTools"] || {};
             var hawtioFolder = gitFacades["io.hawt.osgi"] || {};
+            return hawtioFolder["objectName"];
+        }
+        return null;
+    }
+
+    export function getHawtioConfigAdminMBean(workspace:Workspace):string {
+        if (workspace) {
+            var mbeanTypesToDomain = workspace.mbeanTypesToDomain || {};
+            var configAdmin = mbeanTypesToDomain["ConfigAdmin"] || {};
+            var hawtioFolder = configAdmin["io.hawt.osgi"] || {};
             return hawtioFolder["objectName"];
         }
         return null;

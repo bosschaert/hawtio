@@ -10,25 +10,36 @@ module Osgi {
         $scope.pid = $routeParams.pid;
 
         updateTableContents();
-/*        $("#pids tr td").bind("click", dataClick);
-
-
-        function dataClick(e) {
-    $(e.currentTarget).css({
-        color:"red"
-    });
-        };
-*/
 
         $scope.pidSave = function() {
             var table = document.getElementById("configValues");
 
             var els : any = table.getElementsByClassName("pid-value");
-            var result = "";
+            var props = "";
             for (var i = 0; i < els.length; i++) {
-                result += "\n " + els[i].previousElementSibling.textContent + " " + els[i].textContent;
+                props += "\n " + els[i].previousElementSibling.textContent + " " + els[i].textContent;
             }
 
+            var mbean = getHawtioConfigAdminMBean(workspace);
+            if (mbean) {
+                var jolokia = workspace.jolokia;
+                jolokia.request({
+                        type: "exec",
+                        mbean: mbean,
+                        operation: "configAdminUpdate",
+                        // arguments: ["xxx", "yyy"]
+                        // arguments: [$scope.pid, props]
+                        // arguments: ["zzz", props]
+                        arguments: [$scope.pid, "qqq"]
+                    }, {
+                        error: function(response) {
+                            notification("error", response.error);
+                        },
+                        success: function(response) {
+                            notification("success", response);
+                        }
+                    });
+/*
             var props = 
                 {
                    "a":  { "Key": "a", "Value": "abc", "Type": "String" } // ,
@@ -57,6 +68,7 @@ module Osgi {
                     notification("success", response);
                 }
             });
+*/
 /*
                     jolokia.request(
                         {type: 'exec', mbean: mbean, operation: 'update', 
